@@ -7,50 +7,87 @@
 
 import SwiftUI
 
-let arrayOfChoices = ["Rock", "Scissors", "Paper"]
+// TODO: Add logic to end game when round reaches 10
+// TODO: Refactor showAlert state var name so we can have two different alerts
+// TODO: Use emojis instead of text for rock scissors paper
+// TODO: Add ZStack and add color to make app prettier
 
 struct ContentView: View {
-    @State private var currentChoice = arrayOfChoices.randomElement()
-    @State private var showStartButton = true
+    let arrayOfChoices = ["Rock", "Scissors", "Paper"]
+    let arrayOfChoicesCounter = ["Paper", "Rock", "Scissors"]
+
+    @State private var currentChoice: String = ""
+    @State private var currentCounter: String = ""
     @State private var shouldPlayerWin = false
-    @State private var showAlert = false
-    @State private var userAnswer = ""
+    @State private var showAlert = true
+    @State private var score = 0
+    @State private var round = 0
+    @State private var isPlayerAnswerCorrect = false
     
     func setShouldPlayerWin(_ value: Bool) {
+        let randomIndex = Int.random(in: 0..<arrayOfChoices.count)
+
+        currentChoice = arrayOfChoices[randomIndex]
+        currentCounter = arrayOfChoicesCounter[randomIndex]
         shouldPlayerWin = value
     }
     
-    func setUserAnswer(_ value: String) {
-        userAnswer = value
+    func checkAnswer(_ answer: String) {
+            if(answer == currentCounter && shouldPlayerWin) {
+                score += 1
+                isPlayerAnswerCorrect = true
+            } else if (answer != currentCounter && !shouldPlayerWin) {
+                score += 1
+                isPlayerAnswerCorrect = true
+            } else {
+                if(score > 0) {
+                    score -= 1
+                }
+                isPlayerAnswerCorrect = false
+
+            }
+        showAlert = true
+        round += 1
     }
     
+    
     var body: some View {
-        if(showStartButton) {
-            Button("Start Game") {
-                showAlert = true
-                showStartButton = false
-            }
-        } else {
-            Text(currentChoice ?? "")
+        Spacer()
+        
+        VStack {
+            Text("Score: \(score)")
+            
+            Text(currentChoice)
                 .padding()
-                .alert("Win or Lose?", isPresented: $showAlert) {
+                .alert("\(round > 0 ? (isPlayerAnswerCorrect ? "Correct Answer!" : "Wrong Answer :(") : "") Do you want to win or lose this round?", isPresented: $showAlert) {
+                    Button("Lose") {
+                        setShouldPlayerWin(false)
+                    }
+                    
                     Button("Win") {
                         setShouldPlayerWin(true)
-        
-                    }
-                    Button("Lose", role: .destructive) {
-                        setShouldPlayerWin(false)
                     }
                 }
             
-            HStack {
-                ForEach(arrayOfChoices.indices) { index in
-                    Button(action: {setUserAnswer(arrayOfChoices[index])}) {
-                        Text("\(arrayOfChoices[index])")
-                    }
+            if(!currentChoice.isEmpty) {
+                Text("Player Choice: \(shouldPlayerWin ? "Win" : "Lose")")
+            }
+            
+        }
+        
+        Spacer()
+        
+        HStack {
+            ForEach(arrayOfChoices.indices) { index in
+                Button(action: {checkAnswer(arrayOfChoices[index])}) {
+                    Text("\(arrayOfChoices[index])")
                 }
+                .padding()
+                .background(.gray)
             }
         }
+        
+        Spacer()
     }
 }
 
