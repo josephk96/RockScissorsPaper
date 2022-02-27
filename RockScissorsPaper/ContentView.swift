@@ -7,12 +7,12 @@
 
 import SwiftUI
 
-// TODO: Use emojis instead of text for rock scissors paper
 // TODO: Add ZStack and add color to make app prettier
 
 struct ContentView: View {
     let arrayOfChoices = ["Rock", "Scissors", "Paper"]
     let arrayOfChoicesCounter = ["Paper", "Rock", "Scissors"]
+    let choicesWithEmojiValueDictionary = ["Rock": "🪨", "Scissors": "✂️", "Paper": "🧻"]
 
     @State private var currentChoice: String = ""
     @State private var currentCounter: String = ""
@@ -71,7 +71,7 @@ struct ContentView: View {
         VStack {
             Text("Score: \(score)")
             
-            Text(currentChoice)
+            Text(choicesWithEmojiValueDictionary[currentChoice] ?? currentChoice)
                 .padding()
                 .alert("\(round > 1 ? (isPlayerAnswerCorrect ? "Correct Answer!" : "Wrong Answer :(") : "") Do you want to win or lose this round?", isPresented: $showPromptAlert) {
                     Button("Lose") {
@@ -82,6 +82,7 @@ struct ContentView: View {
                         setShouldPlayerWin(true)
                     }
                 }
+                .font(.system(size: 200))
             
             if(!currentChoice.isEmpty) {
                 Text("Player Choice: \(shouldPlayerWin ? "Win" : "Lose")")
@@ -91,13 +92,14 @@ struct ContentView: View {
         
         Spacer()
         
-        HStack {
+        HStack(spacing: 20) {
             ForEach(arrayOfChoices.indices) { index in
                 Button(action: {checkAnswer(arrayOfChoices[index])}) {
-                    Text("\(arrayOfChoices[index])")
+                    Text(choicesWithEmojiValueDictionary[arrayOfChoices[index]]!)
                 }
                 .padding()
                 .background(.gray)
+                .font(.system(size: 50))
             }
         }
         .alert("Game Over!", isPresented: $showGameOverAlert) {
