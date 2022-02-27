@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-// TODO: Add ZStack and add color to make app prettier
-
 struct ContentView: View {
     let arrayOfChoices = ["Rock", "Scissors", "Paper"]
     let arrayOfChoicesCounter = ["Paper", "Rock", "Scissors"]
@@ -70,6 +68,7 @@ struct ContentView: View {
         
         VStack(spacing: 50) {
             Text("Score: \(score)")
+                .font(.largeTitle.bold())
             
             Text(choicesWithEmojiValueDictionary[currentChoice] ?? currentChoice)
                 .padding()
