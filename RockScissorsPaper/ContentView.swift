@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-// TODO: Add logic to end game when round reaches 10
 // TODO: Refactor showAlert state var name so we can have two different alerts
 // TODO: Use emojis instead of text for rock scissors paper
 // TODO: Add ZStack and add color to make app prettier
@@ -20,8 +19,9 @@ struct ContentView: View {
     @State private var currentCounter: String = ""
     @State private var shouldPlayerWin = false
     @State private var showAlert = true
+    @State private var showGameOverAlert = false
     @State private var score = 0
-    @State private var round = 0
+    @State private var round = 1
     @State private var isPlayerAnswerCorrect = false
     
     func setShouldPlayerWin(_ value: Bool) {
@@ -33,6 +33,7 @@ struct ContentView: View {
     }
     
     func checkAnswer(_ answer: String) {
+        print(round)
             if(answer == currentCounter && shouldPlayerWin) {
                 score += 1
                 isPlayerAnswerCorrect = true
@@ -46,8 +47,22 @@ struct ContentView: View {
                 isPlayerAnswerCorrect = false
 
             }
+        
+        if(round < 10) {
+            round += 1
+            showAlert = true
+            return
+        }
+        
+        showGameOverAlert = true
+    }
+    
+    func resetGame() {
+        round = 1
+        score = 0
+        currentChoice = ""
+        currentCounter = ""
         showAlert = true
-        round += 1
     }
     
     
@@ -59,7 +74,7 @@ struct ContentView: View {
             
             Text(currentChoice)
                 .padding()
-                .alert("\(round > 0 ? (isPlayerAnswerCorrect ? "Correct Answer!" : "Wrong Answer :(") : "") Do you want to win or lose this round?", isPresented: $showAlert) {
+                .alert("\(round > 1 ? (isPlayerAnswerCorrect ? "Correct Answer!" : "Wrong Answer :(") : "") Do you want to win or lose this round?", isPresented: $showAlert) {
                     Button("Lose") {
                         setShouldPlayerWin(false)
                     }
@@ -85,6 +100,13 @@ struct ContentView: View {
                 .padding()
                 .background(.gray)
             }
+        }
+        .alert("Game Over!", isPresented: $showGameOverAlert) {
+            Button("Ok") {
+                resetGame()
+            }
+        } message: {
+            Text("Your total score is \(score)")
         }
         
         Spacer()
