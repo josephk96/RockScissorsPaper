@@ -68,7 +68,7 @@ struct ContentView: View {
     var body: some View {
         Spacer()
         
-        VStack {
+        VStack(spacing: 50) {
             Text("Score: \(score)")
             
             Text(choicesWithEmojiValueDictionary[currentChoice] ?? currentChoice)
@@ -85,20 +85,19 @@ struct ContentView: View {
                 .font(.system(size: 200))
             
             if(!currentChoice.isEmpty) {
-                Text("Player Choice: \(shouldPlayerWin ? "Win" : "Lose")")
+                Text("Please choose the option that will \(shouldPlayerWin ? "win" : "lose") this round")
             }
             
         }
         
         Spacer()
         
-        HStack(spacing: 20) {
+        HStack(spacing: 30) {
             ForEach(arrayOfChoices.indices) { index in
                 Button(action: {checkAnswer(arrayOfChoices[index])}) {
                     Text(choicesWithEmojiValueDictionary[arrayOfChoices[index]]!)
                 }
                 .padding()
-                .background(.gray)
                 .font(.system(size: 50))
             }
         }
